@@ -1,20 +1,23 @@
+
 import 'dart:io';
 
-import 'package:demo_app/api_service.dart';
+import 'package:demo_app/controller/api_controller.dart';
+import 'package:demo_app/repository/api_service.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:profanity_filter/profanity_filter.dart';
 
 
-class HomeScreen extends StatefulWidget {
+class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
 
   @override
-  _HomeScreenState createState() => _HomeScreenState();
+  ConsumerState<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   TextEditingController textEditingController = TextEditingController();
   TextEditingController imageURlController = TextEditingController();
@@ -31,7 +34,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
 
   void checkImageContent(File path) async{
-    final apiService = CheckAdultImageApi();
+    /*final apiService = CheckAdultImageApi();
     dynamic response =await apiService.checkImageContent(path);
     if(response["status"] == "success"){
       contentA = double.parse(response["nudity"]["erotica"].toString()) * 100 ;
@@ -44,7 +47,13 @@ class _HomeScreenState extends State<HomeScreen> {
           imageMessage = "Images are clear";
         });
       }
-    }
+    }*/
+    String futureMessage = await ref.read(obsceneController).getResponseData(path);
+   setState(() {
+     imageMessage = futureMessage;
+   });
+
+
 
 
   }

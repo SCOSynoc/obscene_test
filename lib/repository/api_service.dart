@@ -2,13 +2,17 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:demo_app/models/data_model.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:riverpod/riverpod.dart';
 
+
+final checkAdultApi = Provider((ref) =>  CheckAdultImageApi());
 
 class CheckAdultImageApi {
 
-  Future<Map<String, dynamic>> checkImageContent( File file) async{
+  Future<ResponseObsceneData> checkImageContent( File file) async{
 
     Uri uri = Uri.parse("https://api.sightengine.com/1.0/check.json");
     var request = http.MultipartRequest("POST", uri);
@@ -21,10 +25,10 @@ class CheckAdultImageApi {
       http.StreamedResponse response = await request.send();
       if(response.statusCode == 200){
         final  data = await response.stream.bytesToString();
-        return json.decode(data);
+        return ResponseObsceneData.fromJson(json.decode(data));
       }else{
         final  data = await response.stream.bytesToString();
-        return json.decode(data);
+        return  ResponseObsceneData.fromJson(json.decode(data));
       }
 
     }catch(e){
